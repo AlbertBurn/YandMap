@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YandMap</string>
+    <string name="need_permission">Требуется разрешение локации</string>
+    <string name="delete">Удалить</string>
+    <string name="edit">Редактирова</string>
+    <string name="empty">Пусто</string>
+    <string name="to_places">К местам</string>
+    <string name="map_fragment_title">Карта</string>
+    <string name="places_fragment_title">Места</string>
+    <string name="enter_name">Введи имя</string>
+</resources>
