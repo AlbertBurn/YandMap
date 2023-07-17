@@ -8,12 +8,15 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
@@ -72,7 +75,7 @@ class MapFragment : Fragment() {
     private val viewModel by viewModels<MapViewModel>()
 
     private val placeTapListener = MapObjectTapListener { mapObject, _ ->
-        viewModel.deletePlaceById(mapObject.userData as Long)
+        viewModel.deleteById(mapObject.userData as Long)
         true
     }
 
@@ -130,9 +133,9 @@ class MapFragment : Fragment() {
             val collection = map.mapObjects.addCollection()
             viewLifecycleOwner.lifecycleScope.launch {
                 repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.places.collectLatest { places ->
+                    viewModel.data.collectLatest { data ->
                         collection.clear()
-                        places.forEach { place ->
+                        data.forEach { place ->
                             val placeBinding = PlaceBinding.inflate(layoutInflater)
                             placeBinding.title.text = place.name
                             collection.addPlacemark(

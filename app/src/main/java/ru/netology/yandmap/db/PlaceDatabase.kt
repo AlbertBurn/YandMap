@@ -23,5 +23,11 @@ abstract class PlaceDatabase : RoomDatabase() {
                         INSTANCE = it
                     }
             }
+
+        private fun buildDatabase(context: Context) =
+            Room.databaseBuilder(context, PlaceDatabase::class.java, "app.db")
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build()
     }
 }

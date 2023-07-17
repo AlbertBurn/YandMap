@@ -10,15 +10,15 @@ import ru.netology.yandmap.R
 import ru.netology.yandmap.databinding.PlaceItemBinding
 import ru.netology.yandmap.dto.Place
 
+interface Listener {
+    fun onClick(place: Place)
+    fun onDelete(place: Place)
+    fun onEdit(place: Place)
+}
 class PlacesAdapter(
     private val listener: Listener,
-) : ListAdapter<Place, PlacesAdapter.PlacesViewHolder>(DiffCallback) {
+) : ListAdapter<Place, PlacesViewHolder>(DiffCallback) {
 
-    interface Listener {
-        fun onClick(place: Place)
-        fun onDelete(place: Place)
-        fun onEdit(place: Place)
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlacesViewHolder {
         val binding = PlaceItemBinding.inflate(
@@ -26,20 +26,29 @@ class PlacesAdapter(
             parent,
             false
         )
+        return PlacesViewHolder(binding, listener)
+    }
 
-        val holder = PlacesViewHolder(binding)
-
+    override fun onBindViewHolder(holder: PlacesViewHolder, position: Int) {
+        holder.bind(getItem(position))
+    }
+}
+class PlacesViewHolder(
+    private val binding: PlaceItemBinding,
+    private val listener: Listener,
+) : RecyclerView.ViewHolder(binding.root) {
+    fun bind(place: Place) {
         with(binding) {
-            root.setOnClickListener {
-                val place = getItem(holder.adapterPosition)
+            title.text = place.name
+
+            binding.root.setOnClickListener {
                 listener.onClick(place)
             }
-            menu.setOnClickListener {
-                PopupMenu(root.context, it).apply {
-                    inflate(R.menu.place_menu)
 
-                    setOnMenuItemClickListener { item ->
-                        val place = getItem(holder.adapterPosition)
+            menu.setOnClickListener {
+                PopupMenu(it.context, it).apply {
+                    inflate(R.menu.place_menu)
+                    setOnMenuItemClickListener{ item ->
                         when (item.itemId) {
                             R.id.delete -> {
                                 listener.onDelete(place)
@@ -49,37 +58,20 @@ class PlacesAdapter(
                                 listener.onEdit(place)
                                 true
                             }
+
                             else -> false
                         }
                     }
-
-                    show()
                 }
             }
         }
-
-        return holder
     }
+}
 
-    override fun onBindViewHolder(holder: PlacesViewHolder, position: Int) {
-        holder.bind(getItem(position))
-    }
+object DiffCallback : DiffUtil.ItemCallback<Place>() {
+    override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean =
+        oldItem.id == newItem.id
 
-    class PlacesViewHolder(
-        private val binding: PlaceItemBinding,
-    ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(place: Place) {
-            with(binding) {
-                title.text = place.name
-            }
-        }
-    }
-
-    object DiffCallback : DiffUtil.ItemCallback<Place>() {
-        override fun areItemsTheSame(oldItem: Place, newItem: Place): Boolean =
-            oldItem.id == newItem.id
-
-        override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean =
-            oldItem == newItem
-    }
+    override fun areContentsTheSame(oldItem: Place, newItem: Place): Boolean =
+        oldItem == newItem
 }

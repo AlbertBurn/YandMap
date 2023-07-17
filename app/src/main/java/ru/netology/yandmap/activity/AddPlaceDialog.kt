@@ -34,7 +34,7 @@ class AddPlaceDialog : DialogFragment() {
                     Toast.makeText(requireContext(), "Name is empty", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
-                viewModel.insertPlace(
+                viewModel.insert(
                     Place(
                         id = requireArguments().getSerializable(ID_KEY) as? Long ?: 0,
                         lat = requireArguments().getDouble(LAT_KEY),

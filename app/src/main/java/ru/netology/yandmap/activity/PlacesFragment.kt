@@ -12,12 +12,17 @@ import androidx.lifecycle.coroutineScope
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.flow.collectLatest
 import ru.netology.yandmap.R
+import ru.netology.yandmap.adapter.Listener
 import ru.netology.yandmap.viewmodel.MapViewModel
 import ru.netology.yandmap.dto.Place
 import ru.netology.yandmap.adapter.PlacesAdapter
 import ru.netology.yandmap.databinding.PlacesFragmentBinding
 
 class PlacesFragment : Fragment() {
+
+    private val viewModel: MapViewModel by viewModels(
+        ownerProducer = ::requireParentFragment
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,7 +33,7 @@ class PlacesFragment : Fragment() {
 
         val viewModel by viewModels<MapViewModel>()
 
-        val adapter = PlacesAdapter(object : PlacesAdapter.Listener {
+        val adapter = PlacesAdapter(object : Listener {
 
             override fun onClick(place: Place) {
                 findNavController().navigate(
@@ -40,7 +45,7 @@ class PlacesFragment : Fragment() {
             }
 
             override fun onDelete(place: Place) {
-                viewModel.deletePlaceById(place.id)
+                viewModel.deleteById(place.id)
             }
 
             override fun onEdit(place: Place) {
@@ -52,7 +57,7 @@ class PlacesFragment : Fragment() {
         binding.list.adapter = adapter
 
         viewLifecycleOwner.lifecycle.coroutineScope.launchWhenStarted {
-            viewModel.places.collectLatest { places ->
+            viewModel.data.observe(viewLifecycleOwner) { places ->
                 adapter.submitList(places)
                 binding.empty.isVisible = places.isEmpty()
             }
