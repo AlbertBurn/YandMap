@@ -1,6 +1,7 @@
 package ru.netology.yandmap.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.map
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import ru.netology.yandmap.dao.PlaceDao
@@ -8,7 +9,7 @@ import ru.netology.yandmap.dto.Place
 import ru.netology.yandmap.entity.PlaceEntity
 
 class PlaceRepositoryImpl(private val dao: PlaceDao) : PlaceRepository {
-    override fun getAll(): Flow<List<Place>> =
+    override fun getAll(): LiveData<List<Place>> =
         dao.getAll().map { list ->
             list.map { placeEntity ->
                 placeEntity.toDto()

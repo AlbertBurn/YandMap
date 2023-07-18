@@ -1,5 +1,6 @@
 package ru.netology.yandmap.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -11,7 +12,7 @@ import ru.netology.yandmap.entity.PlaceEntity
 interface PlaceDao {
 
     @Query("SELECT * FROM PlaceEntity")
-    fun getAll(): Flow<List<PlaceEntity>>
+    fun getAll(): LiveData<List<PlaceEntity>>
 
     @Query("DELETE FROM PlaceEntity WHERE id = :id")
     suspend fun deleteById(id: Long)

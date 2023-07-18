@@ -19,7 +19,7 @@ class MapViewModel(application: Application) : AndroidViewModel(application) {
     private val repository: PlaceRepository = PlaceRepositoryImpl(
         PlaceDatabase.getInstance(application).placeDao
     )
-    val data: Flow<List<Place>> = repository.getAll()
+    val data: LiveData<List<Place>> = repository.getAll()
     fun insert(mapPoint: Place) = repository.insert(mapPoint)
     fun deleteById(id: Long) = repository.deleteById(id)
 
